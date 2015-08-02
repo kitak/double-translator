@@ -1,0 +1,17 @@
+{
+  "name": "double-translator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/kitak/double-translator.git"
+  },
+  "homepage": "https://github.com/kitak/double-translator#readme",
+  "devDependencies": {
+    "electron-prebuilt": "^0.30.2"
+  }
+}
