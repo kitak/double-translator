@@ -3,12 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <title></title>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var source = document.getElementById('source');
+      var firstTranslate = document.getElementById('first-translate');
+      var secondTranslate = document.getElementById('second-translate');
+      var firstTranslateResult = document.getElementById('first-translate-result');
+      var secondTranslateResult = document.getElementById('second-translate-result');
+      var copyButton = document.getElementById('copy');
+      source.addEventListener('keyup', function (e) {
+        var input = e.target.value;
+        firstTranslate.send('translate', input);
+      });
+      firstTranslate.addEventListener('ipc-message', function (e) {
+        if (e.channel === 'translate-result') {
+          secondTranslate.send('translate', e.args[0]);
+          firstTranslateResult.innerText = e.args[0];
+        }
+      });
+      secondTranslate.addEventListener('ipc-message', function (e) {
+        if (e.channel === 'translate-result') {
+          secondTranslateResult.innerText = e.args[0];
+        }
+      });
+      copy.addEventListener('click', function () {
+        var range = document.createRange();
+        range.selectNode(firstTranslateResult);
+        window.getSelection().addRange(range);
+        document.execCommand('copy');
+        window.getSelection().removeAllRanges();
+      });
+    });
+  </script>
 </head>
 <body>
-  <webview id="single" src="https://translate.google.co.jp/#ja/en/" style="width: 100%; height: 300%;" autosize="on" nodeintegration></webview>
-  <webview id="double" src="https://translate.google.co.jp/#en/ja/" style="width: 100%; height: 300%;" autosize="on" nodeintegration></webview>
-  <textarea id="" name="" cols="30" rows="10"></textarea>
-  <p></p>
-  <p></p>
+  <webview id="first-translate" src="https://translate.google.co.jp/#ja/ko/" style="width: 100%; height: 300%;" autosize="on" nodeintegration preload="./inject.js"></webview>
+  <webview id="second-translate" src="https://translate.google.co.jp/#ko/ja/" style="width: 100%; height: 300%;" autosize="on" nodeintegration preload="./inject.js"></webview>
+  <textarea id="source" name="" cols="30" rows="10"></textarea>
+  <p id="first-translate-result"></p>
+  <p id="second-translate-result"></p>
+  <button id="copy">クリップボードにコピー</button>
 </body>
 </html>
